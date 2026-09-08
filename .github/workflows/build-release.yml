@@ -18,9 +18,11 @@ on:
         required: false
         default: ''
         type: string
+  repository_dispatch:
+    types: [datingapp-main-updated]
 
 concurrency:
-  group: datingapp-release-${{ github.ref }}-${{ inputs.branch }}
+  group: datingapp-release-${{ github.ref }}-${{ github.event.inputs.branch || github.event.client_payload.branch || 'main' }}
   cancel-in-progress: true
 
 permissions:
@@ -29,7 +31,8 @@ permissions:
 
 env:
   FLUTTER_VERSION: '3.44.3'
-  TARGET_BRANCH: ${{ inputs.branch || 'main' }}
+  TARGET_BRANCH: ${{ github.event.inputs.branch || github.event.client_payload.branch || 'main' }}
+  TRIGGER_MESSAGE: ${{ github.event.inputs.release_notes || github.event.client_payload.commit_message || '' }}
 
 jobs:
   prepare:
@@ -438,7 +441,7 @@ jobs:
       FULL_VERSION: ${{ needs.prepare.outputs.full_version }}
       TAG: ${{ needs.prepare.outputs.tag }}
       GH_TOKEN: ${{ github.token }}
-      RELEASE_NOTES_INPUT: ${{ inputs.release_notes }}
+      RELEASE_NOTES_INPUT: ${{ env.TRIGGER_MESSAGE }}
       ZIP_PASSWORD_INPUT: ${{ inputs.zip_password }}
       DEFAULT_ZIP_PASSWORD: ${{ secrets.RELEASE_ZIP_PASSWORD }}
     steps:
