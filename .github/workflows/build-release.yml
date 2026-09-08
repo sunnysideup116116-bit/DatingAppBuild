@@ -441,6 +441,7 @@ jobs:
       FULL_VERSION: ${{ needs.prepare.outputs.full_version }}
       TAG: ${{ needs.prepare.outputs.tag }}
       GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
       RELEASE_NOTES_INPUT: ${{ github.event.inputs.release_notes || github.event.client_payload.commit_message || '' }}
       ZIP_PASSWORD_INPUT: ${{ github.event.inputs.zip_password || '' }}
       DEFAULT_ZIP_PASSWORD: ${{ secrets.RELEASE_ZIP_PASSWORD }}
@@ -561,12 +562,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if gh release view "$TAG" >/dev/null 2>&1; then
+          if gh release view "$TAG" --repo "$GH_REPO" >/dev/null 2>&1; then
             gh release edit "$TAG" \
+              --repo "$GH_REPO" \
               --title "DatingApp $TAG (Password Protected)" \
               --notes-file "$RELEASE_NOTES_FILE"
           else
             gh release create "$TAG" \
+              --repo "$GH_REPO" \
               --title "DatingApp $TAG (Password Protected)" \
               --notes-file "$RELEASE_NOTES_FILE"
           fi
@@ -576,4 +579,4 @@ jobs:
         run: |
           set -euo pipefail
           mapfile -t artifacts < <(find dist_secured -maxdepth 1 -type f -name '*.zip' -print | sort)
-          gh release upload "$TAG" "${artifacts[@]}" --clobber
+          gh release upload "$TAG" "${artifacts[@]}" --repo "$GH_REPO" --clobber
