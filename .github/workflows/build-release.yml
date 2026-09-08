@@ -441,8 +441,8 @@ jobs:
       FULL_VERSION: ${{ needs.prepare.outputs.full_version }}
       TAG: ${{ needs.prepare.outputs.tag }}
       GH_TOKEN: ${{ github.token }}
-      RELEASE_NOTES_INPUT: ${{ env.TRIGGER_MESSAGE }}
-      ZIP_PASSWORD_INPUT: ${{ inputs.zip_password }}
+      RELEASE_NOTES_INPUT: ${{ github.event.inputs.release_notes || github.event.client_payload.commit_message || '' }}
+      ZIP_PASSWORD_INPUT: ${{ github.event.inputs.zip_password || '' }}
       DEFAULT_ZIP_PASSWORD: ${{ secrets.RELEASE_ZIP_PASSWORD }}
     steps:
       - name: Download Android APKs
