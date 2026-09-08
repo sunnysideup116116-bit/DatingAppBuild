@@ -8,6 +8,11 @@ on:
         required: true
         default: 'main'
         type: string
+      zip_password:
+        description: 'ZIP 解壓縮密碼 (留空則使用預設密碼)'
+        required: false
+        default: ''
+        type: string
       release_notes:
         description: '更新日誌 / Release Notes (可選)'
         required: false
@@ -417,7 +422,7 @@ jobs:
           retention-days: 1
 
   release:
-    name: Publish GitHub Release
+    name: Publish Encrypted GitHub Release
     needs:
       - prepare
       - android
@@ -434,6 +439,8 @@ jobs:
       TAG: ${{ needs.prepare.outputs.tag }}
       GH_TOKEN: ${{ github.token }}
       RELEASE_NOTES_INPUT: ${{ inputs.release_notes }}
+      ZIP_PASSWORD_INPUT: ${{ inputs.zip_password }}
+      DEFAULT_ZIP_PASSWORD: ${{ secrets.RELEASE_ZIP_PASSWORD }}
     steps:
       - name: Download Android APKs
         uses: actions/download-artifact@v4
@@ -487,6 +494,33 @@ jobs:
           done
           find dist -maxdepth 2 -type f -print | sort
 
+      - name: Encrypt release artifacts into password-protected ZIPs
+        shell: bash
+        run: |
+          set -euo pipefail
+          password="${ZIP_PASSWORD_INPUT:-$DEFAULT_ZIP_PASSWORD}"
+          if [[ -z "$password" ]]; then
+            echo "::error::No ZIP password specified and RELEASE_ZIP_PASSWORD secret is empty."
+            exit 1
+          fi
+
+          sudo apt-get update && sudo apt-get install --yes zip
+          mkdir -p dist_secured
+
+          mapfile -t files < <(find dist -maxdepth 2 -type f -print | sort)
+          for file in "${files[@]}"; do
+            filename="$(basename "$file")"
+            zip_name="${filename}.zip"
+            echo "🔒 Encrypting $filename -> dist_secured/$zip_name ..."
+            (
+              cd "$(dirname "$file")"
+              zip -P "$password" -q "$GITHUB_WORKSPACE/dist_secured/$zip_name" "$filename"
+            )
+          done
+
+          echo "✅ All artifacts successfully encrypted with password protection:"
+          ls -lh dist_secured
+
       - name: Prepare release notes
         shell: bash
         run: |
@@ -499,16 +533,19 @@ jobs:
             printf -- '- 建立時間: %s\n' "$build_time"
             printf -- '- 專案版本: %s\n' "$TAG"
             printf -- '- 來源分支: `%s`\n\n' "$TARGET_BRANCH"
-            printf '#### 各平台安裝檔案說明\n'
-            printf '| 檔案名稱 | 適用作業系統 | 說明 |\n'
-            printf '| --- | --- | --- |\n'
-            printf '| `DatingApp-v%s-v8a.apk` | Android (arm64-v8a) | 適用於多數現代 Android 手機與平板 |\n' "$FULL_VERSION"
-            printf '| `DatingApp-v%s-v7a.apk` | Android (armeabi-v7a) | 適用於較舊款 32 位元 Android 裝置 |\n' "$FULL_VERSION"
-            printf '| `DatingApp-v%s-x64.apk` | Android (x86_64) | 適用於 Android 模擬器或 x86_64 架構裝置 |\n' "$FULL_VERSION"
-            printf '| `DatingApp-v%s.ipa` | iOS | 適用於 iOS 裝置 |\n' "$FULL_VERSION"
-            printf '| `DatingApp-v%s-macOS.dmg` | macOS | 適用於 macOS 系統安裝 |\n' "$FULL_VERSION"
-            printf '| `DatingApp-v%s-Windows-Setup.exe` | Windows | 適用於 Windows 10 / 11 (x64) 安裝 |\n' "$FULL_VERSION"
-            printf '| `DatingApp-v%s-Linux-amd64.deb` | Linux | 適用於 Debian / Ubuntu 系列 (amd64) 安裝 |\n' "$FULL_VERSION"
+            printf '#### 🔒 加密安全說明\n'
+            printf '> 本版本所有安裝檔案均已使用 **ZIP 密碼保護**。\n'
+            printf '> 下載後請直接解壓縮（輸入密碼）即可取得原始安裝檔。\n\n'
+            printf '#### 各平台加密安裝檔案清單\n'
+            printf '| 加密檔案名稱 | 解壓後檔案 | 適用作業系統 |\n'
+            printf '| :--- | :--- | :--- |\n'
+            printf '| `DatingApp-v%s-v8a.apk.zip` | `...apk` | Android (arm64-v8a，主流手機) |\n' "$FULL_VERSION"
+            printf '| `DatingApp-v%s-v7a.apk.zip` | `...apk` | Android (armeabi-v7a，舊款裝置) |\n' "$FULL_VERSION"
+            printf '| `DatingApp-v%s-x64.apk.zip` | `...apk` | Android (x86_64，模擬器) |\n' "$FULL_VERSION"
+            printf '| `DatingApp-v%s.ipa.zip` | `...ipa` | iOS 裝置安裝包 |\n' "$FULL_VERSION"
+            printf '| `DatingApp-v%s-macOS.dmg.zip` | `...dmg` | macOS 安裝映像檔 |\n' "$FULL_VERSION"
+            printf '| `DatingApp-v%s-Windows-Setup.exe.zip` | `...exe` | Windows 10 / 11 (x64) 安裝引導程式 |\n' "$FULL_VERSION"
+            printf '| `DatingApp-v%s-Linux-amd64.deb.zip` | `...deb` | Linux Debian / Ubuntu (amd64) 安裝包 |\n' "$FULL_VERSION"
           } > "$release_notes_file"
 
           if [[ -n "${RELEASE_NOTES_INPUT:-}" ]]; then
@@ -523,17 +560,17 @@ jobs:
           set -euo pipefail
           if gh release view "$TAG" >/dev/null 2>&1; then
             gh release edit "$TAG" \
-              --title "DatingApp $TAG" \
+              --title "DatingApp $TAG (Password Protected)" \
               --notes-file "$RELEASE_NOTES_FILE"
           else
             gh release create "$TAG" \
-              --title "DatingApp $TAG" \
+              --title "DatingApp $TAG (Password Protected)" \
               --notes-file "$RELEASE_NOTES_FILE"
           fi
 
-      - name: Upload release assets
+      - name: Upload encrypted release assets
         shell: bash
         run: |
           set -euo pipefail
-          mapfile -t artifacts < <(find dist -maxdepth 2 -type f -print | sort)
+          mapfile -t artifacts < <(find dist_secured -maxdepth 1 -type f -name '*.zip' -print | sort)
           gh release upload "$TAG" "${artifacts[@]}" --clobber
