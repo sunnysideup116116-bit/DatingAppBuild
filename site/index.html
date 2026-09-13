@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="阿月 Dating App 的公開介紹與 Google Calendar 唯讀整合說明。">
+    <title>阿月 Dating App</title>
+    <link rel="stylesheet" href="./assets/site.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳至主要內容</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="./" aria-label="阿月 Dating App 首頁">
+          <span class="brand-mark" aria-hidden="true">月</span>
+          <span>阿月 Dating App</span>
+        </a>
+        <nav aria-label="主要導覽">
+          <a aria-current="page" href="./">首頁</a>
+          <a href="./privacy.html">隱私權政策</a>
+          <a href="./terms.html">服務條款</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow">RELATIONSHIPS, WITH ROOM TO BREATHE</p>
+            <h1>讓認識、安排與相處，<br>都更貼近你的步調。</h1>
+            <p class="lead">
+              阿月 Dating App 是一個以尊重、清楚溝通與個人界線為核心的交友應用程式。
+              阿月協助你整理互動、規劃約會，並由你決定哪些資訊可以被使用。
+            </p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="https://github.com/sunnysideup116116-bit/DatingAppBuild/releases">前往下載頁</a>
+              <a class="button button-secondary" href="#calendar">了解 Google Calendar</a>
+            </div>
+          </div>
+          <aside class="principle-card" aria-label="產品原則">
+            <p class="card-label">阿月的原則</p>
+            <ul>
+              <li>使用者始終保有決定權</li>
+              <li>私人資訊不應成為社交壓力</li>
+              <li>重要操作必須清楚、可撤回</li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="purpose-title">
+        <div class="container">
+          <p class="eyebrow">ABOUT THE APP</p>
+          <h2 id="purpose-title">為真實互動保留一點從容</h2>
+          <div class="three-column">
+            <article>
+              <h3>認識與配對</h3>
+              <p>以個人偏好與互動脈絡協助你發現可能合適的對象；是否繼續、何時回覆，都由你決定。</p>
+            </article>
+            <article>
+              <h3>阿月協助</h3>
+              <p>阿月可協助整理約會規劃與行程建議，但不會替你擅自對外做決定。</p>
+            </article>
+            <article>
+              <h3>隱私優先</h3>
+              <p>產品功能會以資料最小化與可理解的設定為原則，讓你清楚知道資料如何被使用。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="calendar" class="section calendar-section" aria-labelledby="calendar-title">
+        <div class="container split-layout">
+          <div>
+            <p class="eyebrow">OPTIONAL GOOGLE CALENDAR CONNECTION</p>
+            <h2 id="calendar-title">Google Calendar 只讀整合</h2>
+            <p class="lead small">
+              使用者可自行選擇連接 Google Calendar，讓行程顯示在阿月 Dating App 中，並協助判斷適合安排約會的空檔。
+            </p>
+          </div>
+          <div class="read-only-card">
+            <p class="status">唯讀設計</p>
+            <h3>不會修改你的 Google 日曆</h3>
+            <ul class="check-list">
+              <li>不建立 Google Calendar 事件</li>
+              <li>不修改或取消既有 Google Calendar 事件</li>
+              <li>不向其他使用者公開你的行程內容</li>
+              <li>可隨時解除連接並刪除同步資料</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="data-title">
+        <div class="container narrow">
+          <p class="eyebrow">YOUR CHOICE</p>
+          <h2 id="data-title">你決定阿月可以知道多少</h2>
+          <div class="permission-list">
+            <div>
+              <span class="permission-number">01</span>
+              <div>
+                <h3>不授權</h3>
+                <p>阿月不會讀取 Google Calendar。</p>
+              </div>
+            </div>
+            <div>
+              <span class="permission-number">02</span>
+              <div>
+                <h3>忙碌時段</h3>
+                <p>阿月僅能協助判斷你是否有空，不需要知道行程名稱。</p>
+              </div>
+            </div>
+            <div>
+              <span class="permission-number">03</span>
+              <div>
+                <h3>行程名稱與時間</h3>
+                <p>僅在你明確開啟此選項後，阿月才可依行程內容提供更貼近情境的協助。</p>
+              </div>
+            </div>
+          </div>
+          <p class="note">Google Calendar 功能僅會在你主動連接帳號並同意授權後使用。詳細資料處理方式請見<a href="./privacy.html">隱私權政策</a>。</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>© 2026 阿月 Dating App</p>
+        <div>
+          <a href="./privacy.html">隱私權政策</a>
+          <a href="./terms.html">服務條款</a>
+          <a href="https://github.com/sunnysideup116116-bit/DatingAppBuild/releases">下載</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
