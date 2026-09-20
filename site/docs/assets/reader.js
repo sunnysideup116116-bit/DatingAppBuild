@@ -383,7 +383,8 @@ async function enhanceMermaidDiagrams() {
       startOnLoad: false,
       securityLevel: "strict",
       theme: "base",
-      flowchart: { curve: "linear", htmlLabels: true },
+      flowchart: { curve: "linear", htmlLabels: false, useMaxWidth: false },
+      sequence: { useMaxWidth: false, wrap: true },
       themeVariables: {
         background: "#ffffff",
         primaryColor: "#ffffff",
@@ -392,7 +393,7 @@ async function enhanceMermaidDiagrams() {
         lineColor: "#000000",
         secondaryColor: "#f5f5f5",
         tertiaryColor: "#ffffff",
-        fontFamily: "Source Serif 4, Noto Serif TC, Georgia, serif",
+        fontFamily: "Arial, Helvetica, sans-serif",
       },
     });
 

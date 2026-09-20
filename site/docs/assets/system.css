@@ -15,10 +15,17 @@
 html,
 body { min-height: 100%; }
 
-html { scroll-behavior: smooth; }
+html {
+  max-width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
 
 body {
+  width: 100%;
+  max-width: 100%;
   margin: 0;
+  overflow-x: hidden;
   background: var(--paper);
   color: var(--ink);
   font-size: 16px;
@@ -78,12 +85,16 @@ code {
 .skip-link:focus { top: 1rem; }
 
 .reader-app {
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
+  overflow-x: hidden;
   background: var(--paper);
 }
 
 .reader-topbar {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 5;
   display: flex;
   min-height: 4rem;
@@ -165,7 +176,10 @@ code {
 .reader-frame {
   display: grid;
   grid-template-columns: 310px minmax(0, 1fr);
+  width: 100%;
+  max-width: 100%;
   height: calc(100vh - 4rem);
+  overflow: hidden;
 }
 
 .sidebar {
@@ -291,7 +305,10 @@ code {
 .sidebar-backdrop { display: none; }
 
 .reader-main {
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   background: var(--paper);
 }
@@ -329,6 +346,7 @@ code {
 
 .reader-body {
   width: min(920px, calc(100% - 3rem));
+  max-width: 100%;
   margin: 0 auto;
   padding: clamp(2rem, 5vw, 5rem) 0 3rem;
 }
@@ -342,6 +360,8 @@ code {
 }
 
 .markdown-body {
+  max-width: 100%;
+  min-width: 0;
   overflow-wrap: anywhere;
 }
 
@@ -488,6 +508,8 @@ code {
 .diagram-code { border-left-width: 8px; }
 
 .diagram-frame {
+  width: 100%;
+  max-width: 100%;
   margin: 1.5rem 0 2rem;
   overflow: hidden;
   border: 1px solid var(--ink);
@@ -539,6 +561,7 @@ code {
 
 .diagram-render {
   width: 100%;
+  max-width: 100%;
   min-width: 0;
   padding: 1.25rem;
   overflow-x: auto;
@@ -550,6 +573,11 @@ code {
   max-width: none;
   height: auto;
   margin: 0 auto;
+}
+
+.diagram-render text,
+.diagram-render .label {
+  font-family: Arial, Helvetica, sans-serif !important;
 }
 
 .diagram-source {
@@ -657,12 +685,26 @@ code {
 }
 
 @media (max-width: 900px) {
-  .reader-topbar { padding: .6rem 1rem; }
+  .reader-topbar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 20;
+    width: 100%;
+    max-width: 100vw;
+    padding: .6rem 1rem;
+  }
   .menu-button { display: inline-flex; }
   .topbar-divider,
   .topbar-title,
   .source-label { display: none; }
-  .reader-frame { display: block; height: calc(100vh - 4rem); }
+  .reader-frame {
+    display: block;
+    height: 100vh;
+    height: 100dvh;
+    padding-top: 4rem;
+  }
   .sidebar {
     position: fixed;
     top: 4rem;
@@ -689,7 +731,13 @@ code {
   }
   body.sidebar-open .sidebar { transform: translateX(0); }
   body.sidebar-open .sidebar-backdrop { opacity: 1; pointer-events: auto; }
-  .reader-main { height: calc(100vh - 4rem); }
+  .reader-main {
+    width: 100%;
+    max-width: 100vw;
+    height: calc(100vh - 4rem);
+    height: calc(100dvh - 4rem);
+    overflow-x: hidden;
+  }
   .reader-body,
   .doc-pagination,
   .reader-footer { width: min(100% - 2rem, 920px); }
