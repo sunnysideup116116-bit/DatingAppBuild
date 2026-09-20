@@ -112,6 +112,7 @@ Match search context、event discovery、proposal namespace、decision recovery�
 
 ## Cross-References
 
+- 配對阿月詳細流程：[06.1 — 配對阿月](06.1-matchmaking-ayue.md)
 - Agent 互動：[05 — 阿月與 Agent](05-ai-agent.md)
 - 聊天入口：[07 — 聊天與風險治理](07-chat-risk.md)
 - 活動與約會：[10 — 活動、約會與行事曆](10-calendar-events.md)

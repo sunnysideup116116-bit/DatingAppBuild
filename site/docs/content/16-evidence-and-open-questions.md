@@ -54,6 +54,8 @@ graph TD
 
 尚未以完整 `start_all.sh` 執行整合啟動、尚未在瀏覽器／手機／桌面平台跑完整流程，也尚未取得正式 MongoDB、Neo4j、Appwrite、Guardrail、Google Calendar 或模型 provider 的 live schema／health evidence。測試檔案已盤點，但未把未執行的 test suite 寫成通過。
 
+目前另有一個架構文件漂移：`Server/AYUE_V3_ARCHITECTURE.md` 對 Private Ayue 的描述仍稱為 Private V2、非 Pi，但 `private_mediator.py` 與 `private_pi/runtime.py` 的現行 source path、`agent_mode` 與測試都指向 Private Pi。公開阿月則由同一份架構文件、`public_runtime.py`、`pi/public_turn.py` 與近期 Pi-only commit 一致確認為 Pi。正式交付前應由維護者決定是否更新架構文件、保留 V2 作為 contract 名稱，或另行說明 Private Pi 的版本關係。
+
 ### 建議的查證順序
 
 先在隔離環境使用非真實測試帳號和 stub／local database 驗證健康與基礎 API，再驗證登入、公開阿月、配對、雙人聊天風險、行事曆與 App Voice。每一步記錄 request、response code、visible state、log、revision 與 cleanup；若要觸及真實資料或發送外部通知，需另行確認範圍。

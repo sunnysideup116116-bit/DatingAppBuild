@@ -121,6 +121,7 @@ Pair message risk gate、介入 cooldown、sender appeal、receiver feedback、A
 
 ## Cross-References
 
+- 聊天風險詳細流程：[07.1 — 聊天風險](07.1-chat-risk.md)
 - Agent 對話：[05 — 阿月與 Agent](05-ai-agent.md)
 - 身分與 owner：[04 — 身分驗證與個人資料](04-auth-profile.md)
 - API 錯誤碼：[12 — API 與資料契約](12-api-data-contracts.md)

@@ -112,6 +112,7 @@ App Voice protocol、structured confirmation、task service、voice-to-match／c
 
 ## Cross-References
 
+- 語音阿月詳細流程：[08.1 — 語音阿月](08.1-voice-ayue.md)
 - Agent runtime：[05 — 阿月與 Agent](05-ai-agent.md)
 - 配對 action：[06 — 配對與關係建立](06-matchmaking.md)
 - API 與權限：[12 — API 與資料契約](12-api-data-contracts.md)
