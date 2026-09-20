@@ -357,25 +357,25 @@ code {
 }
 
 .markdown-body h1 {
-  margin: 0 0 2rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 8px solid var(--ink);
-  font-size: clamp(2.6rem, 6vw, 5.8rem);
-  letter-spacing: -.075em;
+  margin: 0 0 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 4px solid var(--ink);
+  font-size: clamp(2.35rem, 4.2vw, 4.15rem);
+  letter-spacing: -.065em;
 }
 
 .markdown-body h2 {
-  margin: 4rem 0 1.25rem;
-  padding-top: 1rem;
+  margin: 3rem 0 1.1rem;
+  padding-top: .75rem;
   border-top: 2px solid var(--ink);
-  font-size: clamp(1.9rem, 3.7vw, 3.25rem);
-  letter-spacing: -.055em;
+  font-size: clamp(1.55rem, 2.7vw, 2.5rem);
+  letter-spacing: -.045em;
 }
 
 .markdown-body h3 {
-  margin: 2.5rem 0 .8rem;
-  font-size: clamp(1.35rem, 2.4vw, 2rem);
-  letter-spacing: -.035em;
+  margin: 2.1rem 0 .7rem;
+  font-size: clamp(1.2rem, 1.8vw, 1.65rem);
+  letter-spacing: -.025em;
 }
 
 .markdown-body h4,
@@ -486,6 +486,64 @@ code {
 }
 
 .diagram-code { border-left-width: 8px; }
+
+.diagram-frame {
+  margin: 1.5rem 0 2rem;
+  overflow-x: auto;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+}
+
+.diagram-render {
+  min-width: 620px;
+  padding: 1.25rem;
+  overflow-x: auto;
+}
+
+.diagram-render svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.diagram-source {
+  border-top: 1px solid var(--line-dark);
+  background: var(--soft);
+}
+
+.diagram-source summary {
+  padding: .6rem .85rem;
+  color: var(--muted);
+  font-size: .66rem;
+}
+
+.diagram-source pre {
+  margin: 0;
+  padding: .85rem 1rem 1rem;
+  overflow-x: auto;
+  border-top: 1px solid var(--line);
+  background: var(--soft);
+}
+
+.diagram-source code {
+  padding: 0;
+  background: transparent;
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: .76rem;
+  white-space: pre;
+}
+
+.diagram-failed .diagram-render { display: none; }
+
+.diagram-failed::before {
+  display: block;
+  padding: 1rem;
+  color: var(--muted);
+  content: "流程圖暫時無法渲染，請展開下方 Mermaid 原始碼。";
+  font-family: "JetBrains Mono", monospace;
+  font-size: .72rem;
+}
 
 .doc-pagination {
   display: flex;
@@ -598,8 +656,9 @@ code {
   .brand { font-size: .68rem; }
   .home-link { font-size: .62rem; }
   .reader-body { padding-top: 1.5rem; }
-  .markdown-body h1 { font-size: clamp(2.35rem, 12vw, 4rem); }
-  .markdown-body h2 { margin-top: 3rem; font-size: clamp(1.8rem, 9vw, 2.8rem); }
+  .markdown-body h1 { font-size: clamp(2rem, 9vw, 3rem); }
+  .markdown-body h2 { margin-top: 2.5rem; font-size: clamp(1.5rem, 6vw, 2.2rem); }
+  .diagram-render { min-width: 560px; }
   .markdown-body p { font-size: 1rem; }
   .reader-toolbar { align-items: flex-start; flex-direction: column; gap: .35rem; }
   .toolbar-meta { width: 100%; justify-content: space-between; }

@@ -37,6 +37,7 @@ const docPosition = document.getElementById("doc-position");
 const previousDoc = document.getElementById("previous-doc");
 const nextDoc = document.getElementById("next-doc");
 let currentFile = documents[0].file;
+let mermaidModulePromise;
 
 function escapeHtml(value) {
   return value
@@ -250,7 +251,7 @@ function renderMarkdown(markdown) {
     const heading = line.match(/^(#{1,6})\s+(.+?)\s*#*$/);
     if (heading) {
       const level = heading[1].length;
-      const text = heading[2];
+      const text = /^TL;DR$/i.test(heading[2].trim()) ? "重點摘要" : heading[2];
       output.push(`<h${level} id="${slugify(text, usedSlugs)}">${renderInline(text)}</h${level}>`);
       index += 1;
       continue;
@@ -320,6 +321,54 @@ async function fetchDocument(file) {
   return documentCache.get(file);
 }
 
+async function enhanceMermaidDiagrams() {
+  const blocks = [...documentContent.querySelectorAll("pre.diagram-code")];
+  if (!blocks.length) return;
+
+  let frames = [];
+  try {
+    mermaidModulePromise ??= import("https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs");
+    const mermaidModule = await mermaidModulePromise;
+    const mermaid = mermaidModule.default || mermaidModule;
+    mermaid.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "base",
+      flowchart: { curve: "linear", htmlLabels: true },
+      themeVariables: {
+        background: "#ffffff",
+        primaryColor: "#ffffff",
+        primaryTextColor: "#000000",
+        primaryBorderColor: "#000000",
+        lineColor: "#000000",
+        secondaryColor: "#f5f5f5",
+        tertiaryColor: "#ffffff",
+        fontFamily: "Source Serif 4, Noto Serif TC, Georgia, serif",
+      },
+    });
+
+    frames = blocks.map((block) => {
+      const source = block.textContent;
+      const frame = document.createElement("div");
+      frame.className = "diagram-frame";
+      const diagram = document.createElement("div");
+      diagram.className = "mermaid diagram-render";
+      diagram.textContent = source;
+      const sourceDetails = document.createElement("details");
+      sourceDetails.className = "diagram-source";
+      sourceDetails.innerHTML = `<summary>查看 Mermaid 原始碼</summary><pre><code>${escapeHtml(source)}</code></pre>`;
+      frame.append(diagram, sourceDetails);
+      block.replaceWith(frame);
+      return { frame, diagram };
+    });
+
+    await mermaid.run({ nodes: frames.map(({ diagram }) => diagram) });
+  } catch (error) {
+    console.warn("Mermaid diagram enhancement failed; keeping source blocks.", error);
+    frames.forEach(({ frame }) => frame.classList.add("diagram-failed"));
+  }
+}
+
 async function loadDocument(file, { pushHistory = true } = {}) {
   currentFile = validDocument(file);
   updateNavigation(currentFile);
@@ -335,6 +384,7 @@ async function loadDocument(file, { pushHistory = true } = {}) {
     documentContent.hidden = false;
     loading.hidden = true;
     documentContent.removeAttribute("aria-busy");
+    enhanceMermaidDiagrams();
     if (pushHistory) history.pushState({ document: currentFile }, "", `?doc=${encodeURIComponent(currentFile)}`);
     readerMain.scrollTo({ top: 0, behavior: "auto" });
     setSidebarOpen(false);
