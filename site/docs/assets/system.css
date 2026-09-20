@@ -489,20 +489,65 @@ code {
 
 .diagram-frame {
   margin: 1.5rem 0 2rem;
-  overflow-x: auto;
+  overflow: hidden;
   border: 1px solid var(--ink);
   background: var(--paper);
 }
 
+.diagram-toolbar {
+  display: flex;
+  min-height: 2.9rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .45rem .65rem .45rem .85rem;
+  border-bottom: 1px solid var(--line-dark);
+  background: var(--soft);
+  color: var(--muted);
+  font-family: "JetBrains Mono", monospace;
+  font-size: .64rem;
+  letter-spacing: .04em;
+}
+
+.diagram-controls {
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+.diagram-controls button {
+  min-width: 2.25rem;
+  min-height: 2rem;
+  padding: .25rem .5rem;
+  border: 1px solid var(--ink);
+  background: var(--paper);
+  cursor: pointer;
+  font-family: "JetBrains Mono", monospace;
+  font-size: .68rem;
+}
+
+.diagram-controls button:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.diagram-controls output {
+  min-width: 3.5rem;
+  color: var(--ink);
+  text-align: center;
+}
+
 .diagram-render {
-  min-width: 620px;
+  width: 100%;
+  min-width: 0;
   padding: 1.25rem;
   overflow-x: auto;
+  overscroll-behavior-x: contain;
 }
 
 .diagram-render svg {
   display: block;
-  max-width: 100%;
+  max-width: none;
   height: auto;
   margin: 0 auto;
 }
@@ -658,7 +703,9 @@ code {
   .reader-body { padding-top: 1.5rem; }
   .markdown-body h1 { font-size: clamp(2rem, 9vw, 3rem); }
   .markdown-body h2 { margin-top: 2.5rem; font-size: clamp(1.5rem, 6vw, 2.2rem); }
-  .diagram-render { min-width: 560px; }
+  .diagram-toolbar { align-items: flex-start; flex-direction: column; gap: .35rem; }
+  .diagram-controls { width: 100%; justify-content: space-between; }
+  .diagram-render { padding: .85rem; }
   .markdown-body p { font-size: 1rem; }
   .reader-toolbar { align-items: flex-start; flex-direction: column; gap: .35rem; }
   .toolbar-meta { width: 100%; justify-content: space-between; }

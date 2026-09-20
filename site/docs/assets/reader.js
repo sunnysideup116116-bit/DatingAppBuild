@@ -321,6 +321,55 @@ async function fetchDocument(file) {
   return documentCache.get(file);
 }
 
+function installDiagramControls(frame, diagram) {
+  const svg = diagram.querySelector("svg");
+  if (!svg) return;
+
+  const viewBoxWidth = svg.viewBox?.baseVal?.width || 0;
+  const baseWidth = Math.max(Math.ceil(viewBoxWidth), 960);
+  let scale = 1;
+
+  const toolbar = document.createElement("div");
+  toolbar.className = "diagram-toolbar";
+  toolbar.innerHTML = `
+    <span>流程圖 · 可左右滑動</span>
+    <div class="diagram-controls" aria-label="流程圖縮放控制">
+      <button type="button" data-zoom="out" aria-label="縮小流程圖">−</button>
+      <output aria-live="polite">100%</output>
+      <button type="button" data-zoom="in" aria-label="放大流程圖">＋</button>
+      <button type="button" data-zoom="reset">重設</button>
+    </div>
+  `;
+
+  const output = toolbar.querySelector("output");
+  const applyScale = () => {
+    svg.style.width = `${Math.round(baseWidth * scale)}px`;
+    svg.style.maxWidth = "none";
+    svg.style.height = "auto";
+    output.textContent = `${Math.round(scale * 100)}%`;
+  };
+
+  toolbar.addEventListener("click", (event) => {
+    const button = event.target.closest("button[data-zoom]");
+    if (!button) return;
+    const previousWidth = baseWidth * scale;
+    const centerRatio = previousWidth > 0
+      ? (diagram.scrollLeft + diagram.clientWidth / 2) / previousWidth
+      : 0;
+    if (button.dataset.zoom === "in") scale = Math.min(2.4, scale + .2);
+    if (button.dataset.zoom === "out") scale = Math.max(.6, scale - .2);
+    if (button.dataset.zoom === "reset") scale = 1;
+    applyScale();
+    requestAnimationFrame(() => {
+      diagram.scrollLeft = Math.max(0, centerRatio * baseWidth * scale - diagram.clientWidth / 2);
+    });
+  });
+
+  svg.setAttribute("role", "img");
+  frame.insertBefore(toolbar, diagram);
+  applyScale();
+}
+
 async function enhanceMermaidDiagrams() {
   const blocks = [...documentContent.querySelectorAll("pre.diagram-code")];
   if (!blocks.length) return;
@@ -363,6 +412,7 @@ async function enhanceMermaidDiagrams() {
     });
 
     await mermaid.run({ nodes: frames.map(({ diagram }) => diagram) });
+    frames.forEach(({ frame, diagram }) => installDiagramControls(frame, diagram));
   } catch (error) {
     console.warn("Mermaid diagram enhancement failed; keeping source blocks.", error);
     frames.forEach(({ frame }) => frame.classList.add("diagram-failed"));
